@@ -9,7 +9,8 @@ if __name__ == '__main__':
     con.text_factory = str
     with con:
         cur = con.cursor()
-        cur.execute('CREATE TABLE IF NOT EXISTS cve (cve TEXT, cvss TEXT, severity TEXT, impactScore TEXT, exploitScore TEXT, desc TEXT);')
+        cur.execute("""CREATE TABLE IF NOT EXISTS cve (cve TEXT, cvss TEXT, severity TEXT, 
+                       impactScore TEXT, exploitScore TEXT, desc TEXT);""")
         cur.execute('delete from cve')
 
         years = range(2002, 2025)
@@ -30,8 +31,9 @@ if __name__ == '__main__':
                         data = json.load(f)
                         for record in data['CVE_Items']:
                             if 'baseMetricV2' in record['impact']:
-                                cur.execute(
-                                    'INSERT OR IGNORE INTO cve (cve, cvss, severity, impactScore, exploitScore, desc) VALUES (?,?,?,?,?,?)',
+                                cur.execute("""INSERT OR IGNORE INTO cve 
+                                               (cve, cvss, severity, impactScore, exploitScore, desc) 
+                                               VALUES (?,?,?,?,?,?)""",
                                     (record['cve']['CVE_data_meta']['ID'],
                                      record['impact']['baseMetricV2']['cvssV2']['baseScore'],
                                      record['impact']['baseMetricV2']['severity'],
